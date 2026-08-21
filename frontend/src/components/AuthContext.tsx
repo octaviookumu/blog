@@ -59,6 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
+  // Using useCallback on a login method in React is highly recommended if the method is passed down to child components as a prop, or if it is included in a useEffect dependency array. Memoizing the login function ensures that its reference remains stable across re-renders, preventing unwanted performance lag and infinite rendering
   const login = useCallback((authResponse: AuthResponse) => {
     // The actual network request is performed by the useLogin() mutation;
     // this just applies the result to the shared auth state. authApi.login
@@ -69,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // TODO: Add endpoint to fetch user profile after login
     // const userProfile = await apiService.getUserProfile();
     // setUser(userProfile);
-  }, []);
+  }, []); // Empty dependency array means this function reference never changes
 
   const logout = useCallback(() => {
     authApi.logout(); // Clears the token from localStorage
