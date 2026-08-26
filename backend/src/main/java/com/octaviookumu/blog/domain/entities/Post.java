@@ -36,6 +36,10 @@ public class Post {
     @Column(nullable = false)
     private Integer readingTime;
 
+    @ManyToOne(fetch = FetchType.LAZY) // no need for cascase since a post can't create/modify its author
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
