@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -43,6 +45,18 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY) // no cascades needed as category and post have different life cycles
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToMany
+    // joinColumns - Defines the foreign key column in the post_tags table that points back to the owning entity (Post).
+    // It maps the id of the Post into a column named post_id
+    // inverseJoinColumns - Defines the foreign key column in the post_tags table that points to the target entity (Tag).
+    // It maps the id of the Tag into a column named tag_id
+    @JoinTable(
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>(); // set prevents duplicates and improves performance, not concerned with order
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
