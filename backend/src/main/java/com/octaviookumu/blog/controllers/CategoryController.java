@@ -1,6 +1,7 @@
 package com.octaviookumu.blog.controllers;
 
 import com.octaviookumu.blog.domain.dtos.CategoryDto;
+import com.octaviookumu.blog.mappers.CategoryMapper;
 import com.octaviookumu.blog.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,14 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping
     public ResponseEntity<List<CategoryDto>> listCategories() {
-        return
+        List<CategoryDto> categories = categoryService.listCategories()
+                .stream().map(categoryMapper::toDto)
+                .toList();
+
+        return ResponseEntity.ok(categories);
     }
 }
