@@ -21,8 +21,18 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
      * For each category, join its posts relationship and load those Post objects too.
      * - LEFT JOIN: keep a category even if it has no posts.
      * - FETCH: put the matching posts into category.getPosts() immediately.
+     *
      * @return
      */
-    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.posts") //
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.posts")
+    //
     List<Category> findAllWithPostCount();
+
+    /**
+     * Spring DataJPA can work out what exactly to do with this
+     *
+     * @param name is the provided category
+     * @return whether true or false
+     */
+    boolean existsByNameIgnoreCase(String name);
 }
