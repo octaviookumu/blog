@@ -3,7 +3,6 @@ package com.octaviookumu.blog.services.impl;
 import com.octaviookumu.blog.services.AuthenticationService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,11 +48,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // create a JWT
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getPassword())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiryMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // sign the jwt using our secret
+                .claims(claims)
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiryMs))
+                .signWith(getSigningKey(), Jwts.SIG.HS256) // sign the jwt using our secret
                 .compact(); // will give a string
     }
 
@@ -69,11 +69,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * Extracts the username from the token
      */
     private String extractUsername(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey()) // an exception will be thrown if say, the sign in key doesn't match
+        Claims claims = Jwts.parser()
+                .verifyWith(getSigningKey()) // an exception will be thrown if say, the sign in key doesn't match
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
         return claims.getSubject(); // the username
     }
 
@@ -81,8 +81,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     /**
      * Signs the jwt using our secret
      */
-    private Key getSigningKey() {
-        byte[] keyBytes = secretKey.getBytes();
+    private SecretKey getSigningKey() {          // <-- Change 'Key' to 'SecretKey' here
+        byte[] keyBytes = this.secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
