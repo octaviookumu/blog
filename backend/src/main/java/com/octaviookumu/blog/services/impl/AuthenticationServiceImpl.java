@@ -1,6 +1,7 @@
 package com.octaviookumu.blog.services.impl;
 
 import com.octaviookumu.blog.services.AuthenticationService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -54,6 +55,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256) // sign the jwt using our secret
                 .compact(); // will give a string
     }
+
+    /**
+     * Now that we have this method we can use it in a custom filter
+     */
+    @Override
+    public UserDetails validateToken(String token) {
+        String username = extractUsername(token);
+        return userDetailsService.loadUserByUsername(username);
+    }
+
+    /**
+     * Extracts the username from the token
+     */
+    private String extractUsername(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // an exception will be thrown if say, the sign in key doesn't match
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject(); // the username
+    }
+
 
     /**
      * Signs the jwt using our secret
