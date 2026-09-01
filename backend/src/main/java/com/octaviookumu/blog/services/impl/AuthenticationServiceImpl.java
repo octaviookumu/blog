@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
-        userDetailsService.loadUserByUsername(email);
+        return userDetailsService.loadUserByUsername(email);
     }
 
     @Override
