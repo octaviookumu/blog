@@ -90,22 +90,20 @@ const NavBar: React.FC<NavBarProps> = ({
           <>
             <NavbarItem>
               <Button
-                as={Link}
-                to="/posts/drafts"
                 color="secondary"
                 variant="flat"
                 startContent={<BookDashed size={16} />}
+                onPress={() => navigate('/posts/drafts')}
               >
                 Draft Posts
               </Button>
             </NavbarItem>
             <NavbarItem>
               <Button
-                as={Link}
-                to="/posts/new"
                 color="primary"
                 variant="flat"
                 startContent={<Plus size={16} />}
+                onPress={() => navigate('/posts/new')}
               >
                 New Post
               </Button>
@@ -122,8 +120,13 @@ const NavBar: React.FC<NavBarProps> = ({
                   />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="User menu">
-                  <DropdownItem key="drafts" startContent={<Edit3 size={16} />}>
-                    <Link to="/posts/drafts">My Drafts</Link>
+                  <DropdownItem
+                    key="drafts"
+                    startContent={<Edit3 size={16} />}
+                    onPress={() => navigate('/posts/drafts')}
+                    textValue="My Drafts"
+                  >
+                    My Drafts
                   </DropdownItem>
                   <DropdownItem
                     key="logout"
@@ -144,7 +147,7 @@ const NavBar: React.FC<NavBarProps> = ({
         ) : (
           <>
             <NavbarItem>
-              <Button as={Link} to="/login" variant="flat">
+              <Button variant="flat" onPress={() => navigate('/login')}>
                 Log In
               </Button>
             </NavbarItem>
