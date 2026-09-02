@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Navbar,
   NavbarBrand,
@@ -32,6 +32,7 @@ const NavBar: React.FC<NavBarProps> = ({
   onLogout,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = [
@@ -129,7 +130,10 @@ const NavBar: React.FC<NavBarProps> = ({
                     startContent={<LogOut size={16} />}
                     className="text-danger"
                     color="danger"
-                    onPress={onLogout}
+                    onPress={() => {
+                      onLogout();
+                      navigate('/login');
+                    }}
                   >
                     Log Out
                   </DropdownItem>
