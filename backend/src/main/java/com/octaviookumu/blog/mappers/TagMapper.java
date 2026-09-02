@@ -15,7 +15,6 @@ import java.util.Set;
 public interface TagMapper {
     @Mapping(target = "postCount", source = "posts", qualifiedByName = "calculatePostCount")
     TagResponse toTagResponse(Tag tag);
-
     @Named("calculatePostCount")
     default Integer calculatePostCount(Set<Post> posts) {
         if (posts == null) {

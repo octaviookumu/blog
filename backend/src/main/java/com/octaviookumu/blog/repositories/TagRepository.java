@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -22,4 +23,19 @@ public interface TagRepository extends JpaRepository<Tag, UUID> {
      */
     @Query("SELECT t from Tag t LEFT JOIN FETCH t.posts")
     List<Tag> findAllWithPostCount();
+
+    /**
+     * Spring Data JPA parses repository method names using a documented query-derivation convention.
+     *
+     * <p>findByNameIn(Set<String> names) means:<br>
+     * - findBy - run a select query<br>
+     * - Name - use the Tag.name entity property<br>
+     * - In - generate an SQL IN (...) predicate<br>
+     * - Set<String> names - values supplied to that predicate
+     * </p>
+     *
+     * @param names the tag names to create
+     * @return the list of tags
+     */
+    List<Tag> findByNameIn(Set<String> names);
 }
