@@ -76,7 +76,9 @@ export async function request<T>(
 
   if (res.status === 401) {
     localStorage.removeItem('token');
-    window.location.href = '/login';
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
   }
 
   if (!res.ok) {

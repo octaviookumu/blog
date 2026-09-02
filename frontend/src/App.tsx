@@ -8,7 +8,8 @@ import CategoriesPage from './pages/CategoriesPage';
 import TagsPage from './pages/TagsPage';
 import DraftsPage from './pages/DraftsPage';
 import LoginPage from './pages/LoginPage';
-import { AuthProvider, useAuth } from './components/AuthContext';
+import { AuthProvider } from './components/AuthContext';
+import { useAuth } from './hooks/useAuth';
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

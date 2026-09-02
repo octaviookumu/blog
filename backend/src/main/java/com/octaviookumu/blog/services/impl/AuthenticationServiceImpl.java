@@ -31,7 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private String secretKey;
 
     // btw Long is a nullable Java Object (Wrapper class) while long is a non-nullable primitive type
-    private final Long jwtExpiryMs = 86400000L; // 24 hrs
+    private final Long jwtExpiryMs = 3600000L; // 1hr
 
     @Override
     public UserDetails authenticate(String email, String password) {
