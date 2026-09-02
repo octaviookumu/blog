@@ -28,7 +28,7 @@ public class AuthController {
         String tokenValue = authenticationService.generateToken(userDetails);
         AuthResponse authResponse = AuthResponse.builder()
                 .token(tokenValue)
-                .expiresIn(86400) // 24hrs
+                .expiresIn(3600) // 1hr
                 .build();
         return ResponseEntity.ok(authResponse);
 
