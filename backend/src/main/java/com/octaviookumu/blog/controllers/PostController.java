@@ -2,14 +2,13 @@ package com.octaviookumu.blog.controllers;
 
 import com.octaviookumu.blog.domain.dtos.PostDto;
 import com.octaviookumu.blog.domain.entities.Post;
+import com.octaviookumu.blog.domain.entities.User;
 import com.octaviookumu.blog.mappers.PostMapper;
 import com.octaviookumu.blog.services.PostService;
+import com.octaviookumu.blog.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +20,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostMapper postMapper;
+    private final UserService userService;
 
     // the params will allow us to filter posts based on the category and tag or both
     @GetMapping
@@ -32,4 +32,16 @@ public class PostController {
         List<PostDto> postDtos = posts.stream().map(postMapper::toDto).toList();
         return ResponseEntity.ok(postDtos);
     }
+
+    // Gets the request attribute being set in the JwtFilter
+    @GetMapping("/drafts")
+    public ResponseEntity<List<PostDto>> getDrafts(@RequestAttribute UUID userId) {
+        // filter drafts based on logged in user
+        User loggedInUser = userService.getUserById(userId);
+        List<PostDto> draftPostDtos = postService.getDraftPosts(loggedInUser).stream()
+                .map(postMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(draftPostDtos);
+    }
+
 }
