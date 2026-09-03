@@ -1,7 +1,7 @@
 package com.octaviookumu.blog.controllers;
 
 import com.octaviookumu.blog.domain.dtos.CreateTagsRequest;
-import com.octaviookumu.blog.domain.dtos.TagResponse;
+import com.octaviookumu.blog.domain.dtos.TagDto;
 import com.octaviookumu.blog.domain.entities.Tag;
 import com.octaviookumu.blog.mappers.TagMapper;
 import com.octaviookumu.blog.services.TagService;
@@ -23,20 +23,20 @@ public class TagController {
     private final TagMapper tagMapper;
 
     @GetMapping
-    public ResponseEntity<List<TagResponse>> getAllTags() {
-        List<TagResponse> tagResponses = tagService.getTags().stream()
-                .map(tagMapper::toTagResponse).toList();
-        return ResponseEntity.ok(tagResponses);
+    public ResponseEntity<List<TagDto>> getAllTags() {
+        List<TagDto> tagDto = tagService.getTags().stream()
+                .map(tagMapper::toDto).toList();
+        return ResponseEntity.ok(tagDto);
     }
 
     @PostMapping
-    public ResponseEntity<List<TagResponse>> createTag(@Valid @RequestBody CreateTagsRequest createTagsRequest) {
+    public ResponseEntity<List<TagDto>> createTag(@Valid @RequestBody CreateTagsRequest createTagsRequest) {
         List<Tag> savedTags = tagService.createTags(createTagsRequest.getNames());
-        List<TagResponse> createdTagResponses = savedTags.stream()
-                .map(tagMapper::toTagResponse).toList();
+        List<TagDto> createdTagDto = savedTags.stream()
+                .map(tagMapper::toDto).toList();
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(createdTagResponses);
+                .body(createdTagDto);
     }
 
     @DeleteMapping("/{id}")
