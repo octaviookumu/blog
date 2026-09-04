@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -45,8 +46,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // makes the authentication object available for the rest of the request, essentially setting the authenticated user
 
                 // can be handy later on: setting the user id, rather than having to look up the user by the email address each time, we use the user id
-                if (userDetails instanceof BlogUserDetails) { // use this sparingly
-                    request.setAttribute("userId", ((BlogUserDetails) userDetails).getId());
+                if (userDetails instanceof BlogUserDetails blogUserDetails) { // use this sparingly
+                    UUID id = blogUserDetails.getId();
+
+                    System.out.println("Authenticated user ID: " + id);
+
+                    request.setAttribute("userId", id);
                 }
 
                 // at this point exceptions will bubble up, say if there's in an invalid

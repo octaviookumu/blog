@@ -1,5 +1,6 @@
 package com.octaviookumu.blog.services;
 
+import com.octaviookumu.blog.domain.CreatePostRequest;
 import com.octaviookumu.blog.domain.entities.Post;
 import com.octaviookumu.blog.domain.entities.User;
 
@@ -10,4 +11,6 @@ public interface PostService {
     List<Post> getAllPosts(UUID categoryId, UUID tagId); // TODO: look into paginating
 
     List<Post> getDraftPosts(User user);
+
+    Post createPost(User user, CreatePostRequest createPostRequest);
 }

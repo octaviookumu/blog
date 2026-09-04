@@ -1,12 +1,16 @@
 package com.octaviookumu.blog.controllers;
 
+import com.octaviookumu.blog.domain.CreatePostRequest;
+import com.octaviookumu.blog.domain.dtos.CreatePostRequestDto;
 import com.octaviookumu.blog.domain.dtos.PostDto;
 import com.octaviookumu.blog.domain.entities.Post;
 import com.octaviookumu.blog.domain.entities.User;
 import com.octaviookumu.blog.mappers.PostMapper;
 import com.octaviookumu.blog.services.PostService;
 import com.octaviookumu.blog.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +46,21 @@ public class PostController {
                 .map(postMapper::toDto)
                 .toList();
         return ResponseEntity.ok(draftPostDtos);
+    }
+
+    @PostMapping
+    public ResponseEntity<PostDto> createPost(
+            @Valid @RequestBody CreatePostRequestDto createPostRequestDto,
+            @RequestAttribute UUID userId
+    ) {
+        System.out.println("Request attribute userId: " + userId);
+        User loggedInUser = userService.getUserById(userId);
+        // we shouldn't pass a dto to our service layer
+        // a representation of the create post information
+        CreatePostRequest createPostRequest = postMapper.toCreatePostRequest(createPostRequestDto);
+        Post createdPost = postService.createPost(loggedInUser, createPostRequest);
+        PostDto createdPostDto = postMapper.toDto(createdPost);
+        return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
     }
 
 }
