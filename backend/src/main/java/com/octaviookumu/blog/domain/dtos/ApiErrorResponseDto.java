@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiErrorResponse {
+public class ApiErrorResponseDto {
     private int status;
     private String message;
     private List<FieldError> errors;

@@ -1,6 +1,6 @@
 package com.octaviookumu.blog.controllers;
 
-import com.octaviookumu.blog.domain.dtos.CreateTagsRequest;
+import com.octaviookumu.blog.domain.dtos.CreateTagsRequestDto;
 import com.octaviookumu.blog.domain.dtos.TagDto;
 import com.octaviookumu.blog.domain.entities.Tag;
 import com.octaviookumu.blog.mappers.TagMapper;
@@ -30,8 +30,8 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<List<TagDto>> createTag(@Valid @RequestBody CreateTagsRequest createTagsRequest) {
-        List<Tag> savedTags = tagService.createTags(createTagsRequest.getNames());
+    public ResponseEntity<List<TagDto>> createTag(@Valid @RequestBody CreateTagsRequestDto createTagsRequestDto) {
+        List<Tag> savedTags = tagService.createTags(createTagsRequestDto.getNames());
         List<TagDto> createdTagDto = savedTags.stream()
                 .map(tagMapper::toDto).toList();
         return ResponseEntity

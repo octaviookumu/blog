@@ -1,6 +1,6 @@
 package com.octaviookumu.blog.controllers;
 
-import com.octaviookumu.blog.domain.dtos.ApiErrorResponse;
+import com.octaviookumu.blog.domain.dtos.ApiErrorResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ public class ErrorController {
      * If we are catching a base exception, that means something has gone quite wrong
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
+    public ResponseEntity<ApiErrorResponseDto> handleException(Exception ex) {
         log.error("Caught exception", ex);
-        ApiErrorResponse error = ApiErrorResponse.builder()
+        ApiErrorResponseDto error = ApiErrorResponseDto.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message("An unexpected error occurred")
                 .build();
@@ -33,8 +33,8 @@ public class ErrorController {
      * Handles the IllegalArgumentException we threw earlier
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        ApiErrorResponse error = ApiErrorResponse.builder()
+    public ResponseEntity<ApiErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ApiErrorResponseDto error = ApiErrorResponseDto.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(ex.getMessage()) // passing through the exception message has risks (e.g exposing internal state
                 .build();
@@ -45,8 +45,8 @@ public class ErrorController {
      * Added it after adding deleteCategory method in the service
      */
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException ex) {
-        ApiErrorResponse error = ApiErrorResponse.builder()
+    public ResponseEntity<ApiErrorResponseDto> handleIllegalStateException(IllegalStateException ex) {
+        ApiErrorResponseDto error = ApiErrorResponseDto.builder()
                 .status(HttpStatus.CONFLICT.value())
                 .message(ex.getMessage())
                 .build();
@@ -57,8 +57,8 @@ public class ErrorController {
      * UsernameNotFoundException throws a BadCredentialsException
      */
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
-        ApiErrorResponse error = ApiErrorResponse.builder()
+    public ResponseEntity<ApiErrorResponseDto> handleBadCredentialsException(BadCredentialsException ex) {
+        ApiErrorResponseDto error = ApiErrorResponseDto.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .message("Incorrect username or password")
                 .build();
@@ -66,8 +66,8 @@ public class ErrorController {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
-        ApiErrorResponse error = ApiErrorResponse.builder()
+    public ResponseEntity<ApiErrorResponseDto> handleEntityNotFoundException(EntityNotFoundException ex) {
+        ApiErrorResponseDto error = ApiErrorResponseDto.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .message(ex.getMessage())
                 .build();
