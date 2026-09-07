@@ -33,6 +33,12 @@ public class PostServiceImpl implements PostService {
     private static final int WORDS_PER_MINUTE = 200;
 
     @Override
+    public Post getPost(UUID id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Post does not exist with ID " + id));
+    }
+
+    @Override
     @Transactional(readOnly = true) // we are making multiple db calls we are not writing anything.
     // This is available when you import from the springframework one rather than the jakarta one
     public List<Post> getAllPosts(UUID categoryId, UUID tagId) {
