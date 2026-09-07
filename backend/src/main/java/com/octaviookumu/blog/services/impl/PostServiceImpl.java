@@ -2,6 +2,7 @@ package com.octaviookumu.blog.services.impl;
 
 import com.octaviookumu.blog.domain.CreatePostRequest;
 import com.octaviookumu.blog.domain.PostStatus;
+import com.octaviookumu.blog.domain.UpdatePostRequest;
 import com.octaviookumu.blog.domain.entities.Category;
 import com.octaviookumu.blog.domain.entities.Post;
 import com.octaviookumu.blog.domain.entities.Tag;
@@ -10,6 +11,7 @@ import com.octaviookumu.blog.repositories.PostRepository;
 import com.octaviookumu.blog.services.CategoryService;
 import com.octaviookumu.blog.services.PostService;
 import com.octaviookumu.blog.services.TagService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,6 +90,35 @@ public class PostServiceImpl implements PostService {
         newPost.setTags(new HashSet<>(tags));
 
         return postRepository.save(newPost);
+    }
+
+    @Override
+    @Transactional
+    public Post updatePost(UUID id, UpdatePostRequest updatePostRequest) {
+        Post existingPost = postRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Post does not exist with ID " + id));
+
+        existingPost.setTitle(updatePostRequest.getTitle());
+        String postContent = updatePostRequest.getContent();
+        existingPost.setContent(postContent);
+        existingPost.setReadingTime(calculateReadingTime(postContent));
+        existingPost.setStatus(updatePostRequest.getStatus());
+
+        // update the category but only if changed
+        UUID updatePostRequestCategoryId = updatePostRequest.getCategoryId();
+        if (!existingPost.getCategory().getId().equals(updatePostRequestCategoryId)) {
+            Category newCategory = categoryService.getCategoryById(updatePostRequestCategoryId);
+            existingPost.setCategory(newCategory);
+        }
+
+        // do the same for tags
+        Set<UUID> existingTagIds = existingPost.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
+        Set<UUID> updatePostRequestTagIds = updatePostRequest.getTagIds();
+        if (!existingTagIds.equals(updatePostRequestTagIds)) {
+            List<Tag> newTags = tagService.getTagsByIds(updatePostRequestTagIds);
+            existingPost.setTags(new HashSet<>(newTags));
+        }
+        return postRepository.save(existingPost);
     }
 
     private Integer calculateReadingTime(String content) {

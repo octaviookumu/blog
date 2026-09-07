@@ -1,8 +1,10 @@
 package com.octaviookumu.blog.controllers;
 
 import com.octaviookumu.blog.domain.CreatePostRequest;
+import com.octaviookumu.blog.domain.UpdatePostRequest;
 import com.octaviookumu.blog.domain.dtos.CreatePostRequestDto;
 import com.octaviookumu.blog.domain.dtos.PostDto;
+import com.octaviookumu.blog.domain.dtos.UpdatePostRequestDto;
 import com.octaviookumu.blog.domain.entities.Post;
 import com.octaviookumu.blog.domain.entities.User;
 import com.octaviookumu.blog.mappers.PostMapper;
@@ -61,6 +63,18 @@ public class PostController {
         Post createdPost = postService.createPost(loggedInUser, createPostRequest);
         PostDto createdPostDto = postMapper.toDto(createdPost);
         return new ResponseEntity<>(createdPostDto, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostDto> updatePost(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdatePostRequestDto updatePostRequestDto
+    ) {
+        // as we can't pass our dto to the service layer, we need to create a updatePostRequest
+        UpdatePostRequest updatePostRequest = postMapper.toUpdatePostRequest(updatePostRequestDto);
+        Post updatedPost = postService.updatePost(id, updatePostRequest);
+        PostDto updatedPostDto = postMapper.toDto(updatedPost);
+        return ResponseEntity.ok(updatedPostDto);
     }
 
 }

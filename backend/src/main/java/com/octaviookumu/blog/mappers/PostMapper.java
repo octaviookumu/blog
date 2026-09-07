@@ -1,8 +1,10 @@
 package com.octaviookumu.blog.mappers;
 
 import com.octaviookumu.blog.domain.CreatePostRequest;
+import com.octaviookumu.blog.domain.UpdatePostRequest;
 import com.octaviookumu.blog.domain.dtos.CreatePostRequestDto;
 import com.octaviookumu.blog.domain.dtos.PostDto;
+import com.octaviookumu.blog.domain.dtos.UpdatePostRequestDto;
 import com.octaviookumu.blog.domain.entities.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,5 +20,7 @@ public interface PostMapper {
     @Mapping(target = "tags", source = "tags")
     PostDto toDto(Post post);
 
-    CreatePostRequest toCreatePostRequest(CreatePostRequestDto createPostRequestDto);
+    CreatePostRequest toCreatePostRequest(CreatePostRequestDto dto);
+
+    UpdatePostRequest toUpdatePostRequest(UpdatePostRequestDto dto);
 }

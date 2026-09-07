@@ -1,6 +1,7 @@
 package com.octaviookumu.blog.services;
 
 import com.octaviookumu.blog.domain.CreatePostRequest;
+import com.octaviookumu.blog.domain.UpdatePostRequest;
 import com.octaviookumu.blog.domain.entities.Post;
 import com.octaviookumu.blog.domain.entities.User;
 
@@ -13,4 +14,7 @@ public interface PostService {
     List<Post> getDraftPosts(User user);
 
     Post createPost(User user, CreatePostRequest createPostRequest);
+
+    // Not looking to update the user to which the post belongs
+    Post updatePost(UUID id, UpdatePostRequest updatePostRequest);
 }
