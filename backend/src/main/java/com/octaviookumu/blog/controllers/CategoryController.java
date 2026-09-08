@@ -1,7 +1,7 @@
 package com.octaviookumu.blog.controllers;
 
 import com.octaviookumu.blog.domain.dtos.CategoryDto;
-import com.octaviookumu.blog.domain.dtos.CreateCategoryRequest;
+import com.octaviookumu.blog.domain.dtos.CreateCategoryRequestDto;
 import com.octaviookumu.blog.domain.entities.Category;
 import com.octaviookumu.blog.mappers.CategoryMapper;
 import com.octaviookumu.blog.services.CategoryService;
@@ -33,8 +33,8 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(
-            @Valid @RequestBody CreateCategoryRequest createCategoryRequest) {
-        Category categoryToCreate = categoryMapper.toEntity(createCategoryRequest);
+            @Valid @RequestBody CreateCategoryRequestDto createCategoryRequestDto) {
+        Category categoryToCreate = categoryMapper.toEntity(createCategoryRequestDto);
         Category savedCategory = categoryService.createCategory(categoryToCreate);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

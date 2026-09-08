@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateTagsRequest {
+public class CreateTagsRequestDto {
     @NotEmpty(message = "At least one tag name is required")
     @Size(max = 10, message = "Maximum {max} tags allowed")
     private Set<

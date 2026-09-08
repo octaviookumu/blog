@@ -1,7 +1,7 @@
 package com.octaviookumu.blog.controllers;
 
-import com.octaviookumu.blog.domain.dtos.AuthResponse;
-import com.octaviookumu.blog.domain.dtos.LoginRequest;
+import com.octaviookumu.blog.domain.dtos.AuthResponseDto;
+import com.octaviookumu.blog.domain.dtos.LoginRequestDto;
 import com.octaviookumu.blog.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +19,18 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         UserDetails userDetails = authenticationService
                 .authenticate(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
+                        loginRequestDto.getEmail(),
+                        loginRequestDto.getPassword()
                 );
         String tokenValue = authenticationService.generateToken(userDetails);
-        AuthResponse authResponse = AuthResponse.builder()
+        AuthResponseDto authResponseDto = AuthResponseDto.builder()
                 .token(tokenValue)
                 .expiresIn(3600) // 1hr
                 .build();
-        return ResponseEntity.ok(authResponse);
+        return ResponseEntity.ok(authResponseDto);
 
     }
 

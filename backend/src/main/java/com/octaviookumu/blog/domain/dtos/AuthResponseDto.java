@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthResponse {
+public class AuthResponseDto {
     // this information is baked into the token itself, but it's always useful to have it available easily
     private String token;
     private long expiresIn;
