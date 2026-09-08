@@ -19,4 +19,6 @@ public interface PostService {
 
     // Not looking to update the user to which the post belongs
     Post updatePost(UUID id, UpdatePostRequest updatePostRequest);
+
+    void  deletePost(UUID id);
 }

@@ -49,8 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (userDetails instanceof BlogUserDetails blogUserDetails) { // use this sparingly
                     UUID id = blogUserDetails.getId();
 
-                    System.out.println("Authenticated user ID: " + id);
-
                     request.setAttribute("userId", id);
                 }
 
