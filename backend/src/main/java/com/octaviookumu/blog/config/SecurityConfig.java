@@ -62,9 +62,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/tags/**").permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated() // any other request requires authentication
                 )
-                .csrf(AbstractHttpConfigurer::disable) // disable the csrf tokens, won't use them
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
+                )) // disable the csrf tokens, won't use them
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // using stateless authentication
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
