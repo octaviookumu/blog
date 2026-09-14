@@ -1,6 +1,5 @@
 package com.octaviookumu.blog.config;
 
-import com.octaviookumu.blog.domain.entities.User;
 import com.octaviookumu.blog.repositories.UserRepository;
 import com.octaviookumu.blog.security.BlogUserDetailsService;
 import com.octaviookumu.blog.security.JwtAuthenticationFilter;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -29,25 +27,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
-        BlogUserDetailsService blogUserDetailsService = new BlogUserDetailsService(userRepository);
-
-        String email = "olivia@test.com";
-        userRepository.findByEmail(email).orElseGet(() -> {
-            // Create the user if they don't exist
-            // (Not something you should do in a production environment)
-            // You want to build out that full user management functionality
-            User newUser = User.builder()
-                    .name("Test User")
-                    .email(email)
-                    .password(passwordEncoder().encode("password"))
-                    .build();
-
-            // in this way we will create a test user to use if that user doesn't exist in the database
-            return userRepository.save(newUser);
-        });
-
-
-        return blogUserDetailsService;
+        return new BlogUserDetailsService(userRepository);
     }
 
     @Bean
@@ -70,9 +50,10 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // any other request requires authentication
                 )
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        "/api/v1/auth/login",
                         "/swagger-ui/**",
                         "/v3/api-docs/**"
-                )) // disable the csrf tokens, won't use them
+                ))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // using stateless authentication
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
