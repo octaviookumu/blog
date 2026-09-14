@@ -1,0 +1,5 @@
+target/       # build output - regenerated fresh inside the image every build
+.env          # real secrets (JWT_SECRET, DB creds) - must never end up in an image layer
+.git/         # version history has no reason to ship in a runtime image
+.idea/        # editor config, irrelevant to the running app
+*.iml
