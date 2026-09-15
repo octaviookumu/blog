@@ -7,6 +7,8 @@ FROM maven:3.9-eclipse-temurin-21 AS build
 
 LABEL maintainer="Octavian <octaviookumu@gmail.com>"
 
+WORKDIR /app
+
 # Copies the backend/ folder (the build context) into /app inside the image.
 # See .dockerignore for what's deliberately excluded (target/, .env, etc).
 COPY . .
