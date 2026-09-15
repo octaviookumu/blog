@@ -82,7 +82,14 @@ const PostList: React.FC<PostListProps> = ({ posts, loading, error }) => {
           <div className="space-y-4">
             {/*  if there are no posts OR the posts array is empty? */}
             {!posts || posts.length === 0 ? (
-              <div className="p-6 text-center text-default-500">No posts</div>
+              <Card className="w-full">
+                <CardBody className="text-center py-8">
+                  <h3 className="mt-4 text-lg font-semibold">No posts</h3>
+                  <p className="mt-2 text-sm text-default-500">
+                    There are no posts to display yet.
+                  </p>
+                </CardBody>
+              </Card>
             ) : (
               // else: Map through the posts and display them
               posts?.map((post) => (
