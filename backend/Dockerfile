@@ -7,8 +7,12 @@ FROM maven:3.9-eclipse-temurin-21 AS build
 
 LABEL maintainer="Octavian <octaviookumu@gmail.com>"
 
+WORKDIR /app
+
 # Copies the backend/ folder (the build context) into /app inside the image.
 # See .dockerignore for what's deliberately excluded (target/, .env, etc).
+# It's two separate arguments to COPY, — COPY <source> <destination>.
+# So COPY . . reads as "copy everything from the build context into whatever directory WORKDIR is currently set to."
 COPY . .
 
 # Compiles and packages the app into target/blog-*.jar.
