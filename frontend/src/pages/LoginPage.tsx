@@ -12,8 +12,9 @@ const LoginPage = () => {
 
   const isLoading = loginMutation.isPending;
   const error = loginMutation.isError
-    ? (loginMutation.error as any)?.message ||
-      'Failed to login. Please try again.'
+    ? loginMutation.error instanceof Error
+      ? loginMutation.error.message
+      : 'Failed to login. Please try again.'
     : '';
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +24,7 @@ const LoginPage = () => {
       const response = await loginMutation.mutateAsync({ email, password });
       login(response);
       navigate('/');
-    } catch (err) {
+    } catch {
       // error is surfaced via loginMutation.isError above
     }
   };

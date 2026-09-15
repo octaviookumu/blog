@@ -1,14 +1,11 @@
 import React from 'react';
-import { Link, useNavigate, useNavigation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CardBody,
   CardFooter,
   CardHeader,
   Chip,
-  Pagination,
-  Select,
-  SelectItem,
 } from '@nextui-org/react';
 import { Post } from '../api/types';
 import { Calendar, Clock, Tag } from 'lucide-react';
@@ -24,23 +21,8 @@ interface PostListProps {
   onSortChange: (sortBy: string) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({
-  posts,
-  loading,
-  error,
-  page,
-  sortBy,
-  onPageChange,
-  onSortChange,
-}) => {
+const PostList: React.FC<PostListProps> = ({ posts, loading, error }) => {
   const navigate = useNavigate();
-
-  const sortOptions = [
-    { value: 'createdAt,desc', label: 'Newest First' },
-    { value: 'createdAt,asc', label: 'Oldest First' },
-    { value: 'title,asc', label: 'Title A-Z' },
-    { value: 'title,desc', label: 'Title Z-A' },
-  ];
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -48,15 +30,6 @@ const PostList: React.FC<PostListProps> = ({
       month: 'long',
       day: 'numeric',
     });
-  };
-
-  const createSanitizedHTML = (content: string) => {
-    return {
-      __html: DOMPurify.sanitize(content, {
-        ALLOWED_TAGS: ['p', 'strong', 'em', 'br'],
-        ALLOWED_ATTR: [],
-      }),
-    };
   };
 
   const createExcerpt = (content: string) => {
@@ -93,21 +66,6 @@ const PostList: React.FC<PostListProps> = ({
 
   return (
     <div className="w-full space-y-6">
-      {/* <div className="flex justify-end mb-4">
-        <Select
-          label="Sort by"
-          selectedKeys={[sortBy]}
-          className="max-w-xs"
-          onChange={(e) => onSortChange(e.target.value)}
-        >
-          {sortOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </Select>
-      </div> */}
-
       {loading ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, index) => (
@@ -169,17 +127,6 @@ const PostList: React.FC<PostListProps> = ({
               </Card>
             ))}
           </div>
-
-          {/* {posts && posts.totalPages > 1 && (
-            <div className="flex justify-center mt-6">
-              <Pagination
-                total={posts.totalPages}
-                page={page}
-                onChange={onPageChange}
-                showControls
-              />
-            </div>
-          )} */}
         </>
       )}
     </div>

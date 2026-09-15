@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // setUser(userProfile);
           setIsAuthenticated(true);
           setToken(storedToken);
-        } catch (error) {
+        } catch {
           // If token is invalid, clear authentication
           localStorage.removeItem('token');
           setIsAuthenticated(false);

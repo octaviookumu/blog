@@ -55,7 +55,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
     try {
       await createTagsMutation.mutateAsync(newTags);
       handleModalClose();
-    } catch (err) {
+    } catch {
       // error is surfaced via createTagsMutation.isError above
     }
   };
@@ -69,7 +69,7 @@ const TagsPage: React.FC<TagsPageProps> = ({ isAuthenticated }) => {
 
     try {
       await deleteTagMutation.mutateAsync(tag.id);
-    } catch (err) {
+    } catch {
       // error is surfaced via deleteTagMutation.isError above
     }
   };
