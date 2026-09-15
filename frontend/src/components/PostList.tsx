@@ -80,52 +80,67 @@ const PostList: React.FC<PostListProps> = ({ posts, loading, error }) => {
       ) : (
         <>
           <div className="space-y-4">
-            {posts?.map((post) => (
-              <Card
-                key={post.id}
-                className="w-full p-2"
-                isPressable={true}
-                onPress={() => navToPostPage(post)}
-              >
-                <CardHeader className="flex gap-3">
-                  <div className="flex flex-col">
-                    <h2 className="text-xl font-bold text-left">
-                      {post.title}
-                    </h2>
-                    <p className="text-small text-default-500">
-                      by {post.author?.name}
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardBody>
-                  <p className="line-clamp-3">{createExcerpt(post.content)}</p>
+            {/*  if there are no posts OR the posts array is empty? */}
+            {!posts || posts.length === 0 ? (
+              <Card className="w-full">
+                <CardBody className="text-center py-8">
+                  <h3 className="mt-4 text-lg font-semibold">No posts</h3>
+                  <p className="mt-2 text-sm text-default-500">
+                    There are no posts to display yet.
+                  </p>
                 </CardBody>
-                <CardFooter className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-1 text-small text-default-500">
-                    <Calendar size={16} />
-                    {formatDate(post.createdAt)}
-                  </div>
-                  <div className="flex items-center gap-1 text-small text-default-500">
-                    <Clock size={16} />
-                    {post.readingTime} min read
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Chip className="bg-primary-100 text-primary">
-                      {post.category.name}
-                    </Chip>
-                    {post.tags.map((tag) => (
-                      <Chip
-                        key={tag.id}
-                        className="bg-default-100"
-                        startContent={<Tag size={14} />}
-                      >
-                        {tag.name}
-                      </Chip>
-                    ))}
-                  </div>
-                </CardFooter>
               </Card>
-            ))}
+            ) : (
+              // else: Map through the posts and display them
+              posts?.map((post) => (
+                <Card
+                  key={post.id}
+                  className="w-full p-2"
+                  isPressable={true}
+                  onPress={() => navToPostPage(post)}
+                >
+                  <CardHeader className="flex gap-3">
+                    <div className="flex flex-col">
+                      <h2 className="text-xl font-bold text-left">
+                        {post.title}
+                      </h2>
+                      <p className="text-small text-default-500">
+                        by {post.author?.name}
+                      </p>
+                    </div>
+                  </CardHeader>
+                  <CardBody>
+                    <p className="line-clamp-3">
+                      {createExcerpt(post.content)}
+                    </p>
+                  </CardBody>
+                  <CardFooter className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-1 text-small text-default-500">
+                      <Calendar size={16} />
+                      {formatDate(post.createdAt)}
+                    </div>
+                    <div className="flex items-center gap-1 text-small text-default-500">
+                      <Clock size={16} />
+                      {post.readingTime} min read
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Chip className="bg-primary-100 text-primary">
+                        {post.category.name}
+                      </Chip>
+                      {post.tags.map((tag) => (
+                        <Chip
+                          key={tag.id}
+                          className="bg-default-100"
+                          startContent={<Tag size={14} />}
+                        >
+                          {tag.name}
+                        </Chip>
+                      ))}
+                    </div>
+                  </CardFooter>
+                </Card>
+              ))
+            )}
           </div>
         </>
       )}
