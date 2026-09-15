@@ -72,7 +72,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
         await createCategoryMutation.mutateAsync(newCategoryName.trim());
       }
       handleModalClose();
-    } catch (err) {
+    } catch {
       // error is surfaced via the mutation's isError state above
     }
   };
@@ -88,7 +88,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({ isAuthenticated }) => {
 
     try {
       await deleteCategoryMutation.mutateAsync(category.id);
-    } catch (err) {
+    } catch {
       // error is surfaced via deleteCategoryMutation.isError above
     }
   };

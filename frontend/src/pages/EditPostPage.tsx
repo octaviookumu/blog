@@ -59,7 +59,7 @@ const EditPostPage: React.FC = () => {
       }
 
       navigate('/');
-    } catch (err) {
+    } catch {
       // error is surfaced via the mutation's isError state above
     }
   };

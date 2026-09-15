@@ -27,10 +27,7 @@ interface PostPageProps {
   currentUserId?: string;
 }
 
-const PostPage: React.FC<PostPageProps> = ({
-  isAuthenticated,
-  currentUserId,
-}) => {
+const PostPage: React.FC<PostPageProps> = ({ isAuthenticated }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: post, isLoading: loading, error: fetchError } = usePost(id);
@@ -53,7 +50,7 @@ const PostPage: React.FC<PostPageProps> = ({
     try {
       await deletePostMutation.mutateAsync(post.id);
       navigate('/');
-    } catch (err) {
+    } catch {
       // error is surfaced via deletePostMutation.isError above
     }
   };
@@ -65,7 +62,7 @@ const PostPage: React.FC<PostPageProps> = ({
         text: post?.content.substring(0, 100) + '...',
         url: window.location.href,
       });
-    } catch (err) {
+    } catch {
       // Fallback to copying URL
       navigator.clipboard.writeText(window.location.href);
     }
