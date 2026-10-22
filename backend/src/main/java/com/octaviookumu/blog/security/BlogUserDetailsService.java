@@ -1,7 +1,7 @@
 package com.octaviookumu.blog.security;
 
-import com.octaviookumu.blog.domain.entities.User;
-import com.octaviookumu.blog.repositories.UserRepository;
+import com.octaviookumu.blog.domain.entity.User;
+import com.octaviookumu.blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
