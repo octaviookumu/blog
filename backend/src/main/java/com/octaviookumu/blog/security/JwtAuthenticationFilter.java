@@ -1,6 +1,6 @@
 package com.octaviookumu.blog.security;
 
-import com.octaviookumu.blog.services.AuthenticationService;
+import com.octaviookumu.blog.service.AuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

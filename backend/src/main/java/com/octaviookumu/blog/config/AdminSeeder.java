@@ -1,7 +1,7 @@
 package com.octaviookumu.blog.config;
 
-import com.octaviookumu.blog.repositories.UserRepository;
-import com.octaviookumu.blog.services.UserService;
+import com.octaviookumu.blog.repository.UserRepository;
+import com.octaviookumu.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

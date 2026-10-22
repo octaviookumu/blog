@@ -1,6 +1,6 @@
 package com.octaviookumu.blog.security;
 
-import com.octaviookumu.blog.domain.entities.User;
+import com.octaviookumu.blog.domain.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;

@@ -1,9 +1,9 @@
 package com.octaviookumu.blog.config;
 
-import com.octaviookumu.blog.repositories.UserRepository;
+import com.octaviookumu.blog.repository.UserRepository;
 import com.octaviookumu.blog.security.BlogUserDetailsService;
 import com.octaviookumu.blog.security.JwtAuthenticationFilter;
-import com.octaviookumu.blog.services.AuthenticationService;
+import com.octaviookumu.blog.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
