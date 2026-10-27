@@ -3,6 +3,7 @@ package com.octaviookumu.blog.config;
 
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.octaviookumu.blog.domain.entity.Post;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import tools.jackson.databind.SerializationFeature;
@@ -22,6 +24,7 @@ public class RedisConfig {
     // defines how keys and values are set in redis
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
+        var postSerializer = new JacksonJsonRedisSerializer<>(Post.class);
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10))
                 .serializeKeysWith(
@@ -30,12 +33,11 @@ public class RedisConfig {
                 )
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair
-                                .fromSerializer(GenericJacksonJsonRedisSerializer.builder().build())
+                                .fromSerializer(postSerializer)
                 );
 
         return RedisCacheManager.builder(factory)
                 .cacheDefaults(config)
                 .build();
-
     }
 }
