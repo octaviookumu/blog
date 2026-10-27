@@ -1,5 +1,6 @@
 package com.octaviookumu.blog.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +34,7 @@ public class User {
     private String name;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true) // user deleted -> posts deleted
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
     @Column(nullable = false)
