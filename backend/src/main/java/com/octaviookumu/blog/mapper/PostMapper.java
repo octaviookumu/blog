@@ -15,7 +15,7 @@ public interface PostMapper {
 
     // Because inside our post we have our user/author, category and tags, we add some mapping annotations
     // Essentially means: copy post.author (source) into postDto.author (target)
-    @Mapping(target = "author", source = "author") //
+    @Mapping(target = "author", source = "author")
     @Mapping(target = "category", source = "category")
     @Mapping(target = "tags", source = "tags")
     @Mapping(target = "status", source = "status")
