@@ -1,5 +1,6 @@
 package com.octaviookumu.blog.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class Category {
 
     @OneToMany(mappedBy = "category") // no cascades needed as category and post have different life cycles.
     // so deleting a category should be prevented if it has posts
+    @JsonIgnore
     private List<Post> posts = new ArrayList<>();
 
     @Override
