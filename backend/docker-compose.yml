@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:18
+    container_name: db
     ports:
       - "5431:5432"
     restart: always
@@ -11,11 +12,22 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
   adminer:
     image: adminer:latest
+    container_name: adminer
     restart: always
     ports:
       - "8888:8080"
 
 volumes:
   postgres_data:
+  redis_data:
