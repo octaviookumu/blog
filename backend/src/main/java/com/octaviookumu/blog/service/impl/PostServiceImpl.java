@@ -13,6 +13,8 @@ import com.octaviookumu.blog.service.PostService;
 import com.octaviookumu.blog.service.TagService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +83,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CachePut(value = "posts", key = "#result.id")
     public Post createPost(User user, CreatePostRequest createPostRequest) {
         Post newPost = new Post();
         newPost.setTitle(createPostRequest.getTitle());
@@ -102,6 +105,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CachePut(value = "posts", key = "#id")
     public Post updatePost(UUID id, UpdatePostRequest updatePostRequest) {
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Post does not exist with ID " + id));
@@ -130,6 +134,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CacheEvict(value = "posts", key = "#id")
     public void deletePost(UUID id) {
         Post post = getPost(id);
         postRepository.delete(post);
