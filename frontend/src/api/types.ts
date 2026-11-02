@@ -67,3 +67,23 @@ export interface ApiError {
     message: string;
   }>;
 }
+
+// Mirrors Spring Data's Page<T> JSON
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number; // current page, 0-based
+  size: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+}
+
+export interface PostListParams {
+  categoryId?: string;
+  tagId?: string;
+  page?: number; // 0-based, sent straight to Spring
+  size?: number;
+  sort?: string; // e.g. 'createdAt,desc'
+}

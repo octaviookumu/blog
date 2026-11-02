@@ -5,8 +5,10 @@ import { usePosts } from '../hooks/usePosts';
 import { useCategories } from '../hooks/useCategories';
 import { useTags } from '../hooks/useTags';
 
+const PAGE_SIZE = 10;
+
 const HomePage: React.FC = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); // 1-based in the UI
   const [sortBy, setSortBy] = useState('createdAt,desc');
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined,
@@ -14,12 +16,15 @@ const HomePage: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
 
   const {
-    data: posts = null,
+    data: postsPage,
     isLoading: postsLoading,
     error: postsError,
   } = usePosts({
-    categoryId: selectedCategory != undefined ? selectedCategory : undefined,
-    tagId: selectedTag || undefined,
+    categoryId: selectedCategory,
+    tagId: selectedTag,
+    page: page - 1, // Spring pages are 0-based
+    size: PAGE_SIZE,
+    sort: sortBy,
   });
   const { data: categories = [] } = useCategories();
   const { data: tags = [] } = useTags();
@@ -30,11 +35,18 @@ const HomePage: React.FC = () => {
     : null;
 
   const handleCategoryChange = (categoryId: string | undefined) => {
-    if ('all' === categoryId) {
-      setSelectedCategory(undefined);
-    } else {
-      setSelectedCategory(categoryId);
-    }
+    setSelectedCategory('all' === categoryId ? undefined : categoryId);
+    setPage(1); // filter changed -> back to the first page
+  };
+
+  const handleTagClick = (tagId: string) => {
+    setSelectedTag(selectedTag === tagId ? undefined : tagId);
+    setPage(1);
+  };
+
+  const handleSortChange = (newSort: string) => {
+    setSortBy(newSort);
+    setPage(1);
   };
 
   return (
@@ -46,7 +58,7 @@ const HomePage: React.FC = () => {
         <CardBody>
           <div className="flex flex-col gap-4">
             <Tabs
-              selectedKey={selectedCategory}
+              selectedKey={selectedCategory ?? 'all'}
               onSelectionChange={(key) => {
                 handleCategoryChange(key as string);
               }}
@@ -70,9 +82,7 @@ const HomePage: React.FC = () => {
                 {tags.map((tag) => (
                   <button
                     key={tag.id}
-                    onClick={() =>
-                      setSelectedTag(selectedTag == tag.id ? undefined : tag.id)
-                    }
+                    onClick={() => handleTagClick(tag.id)}
                     className={`px-3 py-1 rounded-full text-sm ${
                       selectedTag === tag.id
                         ? 'bg-primary text-white'
@@ -89,13 +99,14 @@ const HomePage: React.FC = () => {
       </Card>
 
       <PostList
-        posts={posts}
+        posts={postsPage?.content ?? null}
+        totalPages={postsPage?.totalPages ?? 0}
         loading={loading}
         error={error}
         page={page}
         sortBy={sortBy}
         onPageChange={setPage}
-        onSortChange={setSortBy}
+        onSortChange={handleSortChange}
       />
     </div>
   );
