@@ -5,10 +5,11 @@ import com.octaviookumu.blog.domain.entity.Category;
 import com.octaviookumu.blog.domain.entity.Post;
 import com.octaviookumu.blog.domain.entity.Tag;
 import com.octaviookumu.blog.domain.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -23,15 +24,16 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      * @param status   post status
      * @param category category
      * @param tag      tag
+     * @param pageable pageable
      * @return a list of posts
      */
-    List<Post> findAllByStatusAndCategoryAndTagsContaining(PostStatus status, Category category, Tag tag);
+    Page<Post> findAllByStatusAndCategoryAndTagsContaining(PostStatus status, Category category, Tag tag, Pageable pageable);
 
-    List<Post> findAllByStatusAndCategory(PostStatus status, Category category);
+    Page<Post> findAllByStatusAndCategory(PostStatus status, Category category, Pageable pageable);
 
-    List<Post> findAllByStatusAndTagsContaining(PostStatus status, Tag tag);
+    Page<Post> findAllByStatusAndTagsContaining(PostStatus status, Tag tag, Pageable pageable);
 
-    List<Post> findAllByStatus(PostStatus status);
+    Page<Post> findAllByStatus(PostStatus status, Pageable pageable);
 
-    List<Post> findAllByAuthorAndStatus(User user, PostStatus status);
+    Page<Post> findAllByAuthorAndStatus(User user, PostStatus status, Pageable pageable);
 }

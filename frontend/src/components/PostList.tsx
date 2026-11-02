@@ -6,6 +6,7 @@ import {
   CardFooter,
   CardHeader,
   Chip,
+  Pagination,
 } from '@nextui-org/react';
 import { Post } from '../api/types';
 import { Calendar, Clock, Tag } from 'lucide-react';
@@ -13,15 +14,23 @@ import DOMPurify from 'dompurify';
 
 interface PostListProps {
   posts: Post[] | null;
+  totalPages?: number;
   loading: boolean;
   error: string | null;
-  page: number;
+  page: number; // 1-based (UI); callers convert to 0-based for the API
   sortBy: string;
   onPageChange: (page: number) => void;
   onSortChange: (sortBy: string) => void;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, loading, error }) => {
+const PostList: React.FC<PostListProps> = ({
+  posts,
+  totalPages = 0,
+  loading,
+  error,
+  page,
+  onPageChange,
+}) => {
   const navigate = useNavigate();
 
   const formatDate = (dateString: string) => {
@@ -92,7 +101,7 @@ const PostList: React.FC<PostListProps> = ({ posts, loading, error }) => {
               </Card>
             ) : (
               // else: Map through the posts and display them
-              posts?.map((post) => (
+              posts.map((post) => (
                 <Card
                   key={post.id}
                   className="w-full p-2"
@@ -142,6 +151,21 @@ const PostList: React.FC<PostListProps> = ({ posts, loading, error }) => {
               ))
             )}
           </div>
+
+          {/* only show the pager when there's more than one page */}
+          {totalPages > 1 && (
+            <div className="flex justify-center pt-2">
+              <Pagination
+                total={totalPages}
+                page={page}
+                onChange={(p) => {
+                  onPageChange(p);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                showControls
+              />
+            </div>
+          )}
         </>
       )}
     </div>

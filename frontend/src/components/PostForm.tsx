@@ -7,7 +7,6 @@ import {
   Select,
   SelectItem,
   Chip,
-  SelectSection,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
@@ -70,6 +69,7 @@ const PostForm: React.FC<PostFormProps> = ({
         heading: false, // Disable default heading to use our custom config
         bulletList: false, // Disable default list to use our custom config
         orderedList: false, // Disable default list to use our custom config
+        listItem: false, // NEW: we add ListItem ourselves below
       }),
       Heading.configure({
         levels: [1, 2, 3],
@@ -137,21 +137,24 @@ const PostForm: React.FC<PostFormProps> = ({
   };
 
   const handleTagAdd = (tag: Tag) => {
-    if (tag && !selectedTags.includes(tag) && selectedTags.length < 10) {
+    if (
+      !selectedTags.some((t) => t.id === tag.id) &&
+      selectedTags.length < 10
+    ) {
       setSelectedTags([...selectedTags, tag]);
     }
   };
 
   const handleTagRemove = (tagToRemove: Tag) => {
-    setSelectedTags(selectedTags.filter((tag) => tag !== tagToRemove));
+    setSelectedTags(selectedTags.filter((tag) => tag.id !== tagToRemove.id));
   };
 
   const handleHeadingSelect = (level: Level) => {
     editor?.chain().focus().toggleHeading({ level }).run();
   };
-
+  const selectedTagIds = new Set(selectedTags.map((t) => t.id));
   const suggestedTags = availableTags
-    .filter((tag) => !selectedTags.includes(tag))
+    .filter((tag) => !selectedTagIds.has(tag.id))
     .slice(0, 5);
 
   return (
@@ -222,7 +225,7 @@ const PostForm: React.FC<PostFormProps> = ({
                 size="sm"
                 isIconOnly
                 variant="flat"
-                onClick={() => editor?.chain().focus().toggleBold().run()}
+                onPress={() => editor?.chain().focus().toggleBold().run()}
                 className={editor?.isActive('bold') ? 'bg-default-200' : ''}
               >
                 <Bold size={16} />
@@ -231,7 +234,7 @@ const PostForm: React.FC<PostFormProps> = ({
                 size="sm"
                 isIconOnly
                 variant="flat"
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
+                onPress={() => editor?.chain().focus().toggleItalic().run()}
                 className={editor?.isActive('italic') ? 'bg-default-200' : ''}
               >
                 <Italic size={16} />
@@ -243,7 +246,7 @@ const PostForm: React.FC<PostFormProps> = ({
                 size="sm"
                 isIconOnly
                 variant="flat"
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                onPress={() => editor?.chain().focus().toggleBulletList().run()}
                 className={
                   editor?.isActive('bulletList') ? 'bg-default-200' : ''
                 }
@@ -254,7 +257,7 @@ const PostForm: React.FC<PostFormProps> = ({
                 size="sm"
                 isIconOnly
                 variant="flat"
-                onClick={() =>
+                onPress={() =>
                   editor?.chain().focus().toggleOrderedList().run()
                 }
                 className={
@@ -270,7 +273,7 @@ const PostForm: React.FC<PostFormProps> = ({
                 size="sm"
                 isIconOnly
                 variant="flat"
-                onClick={() => editor?.chain().focus().undo().run()}
+                onPress={() => editor?.chain().focus().undo().run()}
                 isDisabled={!editor?.can().undo()}
               >
                 <Undo size={16} />
@@ -279,7 +282,7 @@ const PostForm: React.FC<PostFormProps> = ({
                 size="sm"
                 isIconOnly
                 variant="flat"
-                onClick={() => editor?.chain().focus().redo().run()}
+                onPress={() => editor?.chain().focus().redo().run()}
                 isDisabled={!editor?.can().redo()}
               >
                 <Redo size={16} />
@@ -311,19 +314,16 @@ const PostForm: React.FC<PostFormProps> = ({
           <div className="space-y-2">
             <Select
               label="Add Tags"
-              selectedKeys={selectedTags.map((tag) => tag.id)}
+              selectedKeys={[]}
+              onSelectionChange={(keys) => {
+                const id = Array.from(keys)[0];
+                const tag = availableTags.find((t) => t.id === id);
+                if (tag) handleTagAdd(tag);
+              }}
             >
-              <SelectSection>
-                {suggestedTags.map((tag) => (
-                  <SelectItem
-                    key={tag.id}
-                    value={tag.id}
-                    onClick={() => handleTagAdd(tag)}
-                  >
-                    {tag.name}
-                  </SelectItem>
-                ))}
-              </SelectSection>
+              {suggestedTags.map((tag) => (
+                <SelectItem key={tag.id}>{tag.name}</SelectItem>
+              ))}
             </Select>
             <div className="flex flex-wrap gap-2 mt-2">
               {selectedTags.map((tag) => (
@@ -361,7 +361,7 @@ const PostForm: React.FC<PostFormProps> = ({
             <Button
               color="danger"
               variant="flat"
-              onClick={onCancel}
+              onPress={onCancel}
               disabled={isSubmitting}
             >
               Cancel

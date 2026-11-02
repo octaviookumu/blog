@@ -5,15 +5,17 @@ import { Link } from 'react-router-dom';
 import PostList from '../components/PostList';
 import { useDrafts } from '../hooks/usePosts';
 
+const PAGE_SIZE = 10;
+
 const DraftsPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState('updatedAt,desc');
 
   const {
-    data: drafts = null,
+    data: draftsPage,
     isLoading: loading,
     error: fetchError,
-  } = useDrafts({ page: page - 1, size: 10, sort: sortBy });
+  } = useDrafts({ page: page - 1, size: PAGE_SIZE, sort: sortBy });
 
   const error = fetchError
     ? 'Failed to load drafts. Please try again later.'
@@ -42,7 +44,8 @@ const DraftsPage: React.FC = () => {
           )}
 
           <PostList
-            posts={drafts}
+            posts={draftsPage?.content ?? null}
+            totalPages={draftsPage?.totalPages ?? 0}
             loading={loading}
             error={error}
             page={page}
@@ -51,7 +54,7 @@ const DraftsPage: React.FC = () => {
             onSortChange={setSortBy}
           />
 
-          {drafts?.length === 0 && !loading && (
+          {draftsPage?.empty && !loading && (
             <div className="text-center py-8 text-default-500">
               <p>You don't have any draft posts yet.</p>
               <Button

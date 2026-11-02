@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +47,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true) // we are making multiple db calls we are not writing anything.
     // This is available when you import from the springframework one rather than the jakarta one
-    public List<Post> getAllPosts(UUID categoryId, UUID tagId) {
+    public Page<Post> getAllPosts(UUID categoryId, UUID tagId, Pageable pageable) {
         if (categoryId != null && tagId != null) {
             // published posts that match both the category and tag id
             Category category = categoryService.getCategoryById(categoryId);
@@ -54,14 +56,16 @@ public class PostServiceImpl implements PostService {
                     .findAllByStatusAndCategoryAndTagsContaining(
                             PostStatus.PUBLISHED,
                             category,
-                            tag
+                            tag,
+                            pageable
                     );
         }
         if (categoryId != null) {
             Category category = categoryService.getCategoryById(categoryId);
             return postRepository.findAllByStatusAndCategory(
                     PostStatus.PUBLISHED,
-                    category
+                    category,
+                    pageable
             );
         }
 
@@ -69,16 +73,17 @@ public class PostServiceImpl implements PostService {
             Tag tag = tagService.getTagById(tagId);
             return postRepository.findAllByStatusAndTagsContaining(
                     PostStatus.PUBLISHED,
-                    tag
+                    tag,
+                    pageable
             );
         }
 
-        return postRepository.findAllByStatus(PostStatus.PUBLISHED);
+        return postRepository.findAllByStatus(PostStatus.PUBLISHED, pageable);
     }
 
     @Override
-    public List<Post> getDraftPosts(User user) {
-        return postRepository.findAllByAuthorAndStatus(user, PostStatus.DRAFT);
+    public Page<Post> getDraftPosts(User user, Pageable pageable) {
+        return postRepository.findAllByAuthorAndStatus(user, PostStatus.DRAFT, pageable);
     }
 
     @Override

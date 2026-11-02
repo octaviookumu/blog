@@ -1,12 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import * as postsApi from '../api/posts';
-import { Post, UpdatePostRequest } from '../api/types';
+import { Post, PostListParams, UpdatePostRequest } from '../api/types';
 import { queryKeys } from './queryKeys';
 
-export function usePosts(params: { categoryId?: string; tagId?: string }) {
+export function usePosts(params: PostListParams) {
   return useQuery({
     queryKey: queryKeys.posts.list(params),
     queryFn: () => postsApi.getPosts(params),
+    placeholderData: keepPreviousData, // no skeleton flash between pages
   });
 }
 
@@ -26,6 +32,7 @@ export function useDrafts(params: {
   return useQuery({
     queryKey: queryKeys.posts.drafts(params),
     queryFn: () => postsApi.getDrafts(params),
+    placeholderData: keepPreviousData,
   });
 }
 
