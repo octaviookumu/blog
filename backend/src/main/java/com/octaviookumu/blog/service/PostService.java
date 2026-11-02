@@ -4,16 +4,17 @@ import com.octaviookumu.blog.domain.CreatePostRequest;
 import com.octaviookumu.blog.domain.UpdatePostRequest;
 import com.octaviookumu.blog.domain.entity.Post;
 import com.octaviookumu.blog.domain.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface PostService {
     Post getPost(UUID id);
 
-    List<Post> getAllPosts(UUID categoryId, UUID tagId); // TODO: look into paginating
+    Page<Post> getAllPosts(UUID categoryId, UUID tagId, Pageable pageable);
 
-    List<Post> getDraftPosts(User user);
+    Page<Post> getDraftPosts(User user, Pageable pageable);
 
     Post createPost(User user, CreatePostRequest createPostRequest);
 

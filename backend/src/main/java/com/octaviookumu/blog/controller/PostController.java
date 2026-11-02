@@ -12,11 +12,12 @@ import com.octaviookumu.blog.service.PostService;
 import com.octaviookumu.blog.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,23 +31,26 @@ public class PostController {
 
     // the params will allow us to filter posts based on the category and tag or both
     @GetMapping
-    public ResponseEntity<List<PostDto>> getAllPosts(
+    public ResponseEntity<Page<PostDto>> getAllPosts(
             @RequestParam(required = false) UUID categoryId,
-            @RequestParam(required = false) UUID tagId
+            @RequestParam(required = false) UUID tagId,
+            Pageable pageable
     ) {
-        List<Post> posts = postService.getAllPosts(categoryId, tagId);
-        List<PostDto> postDtos = posts.stream().map(postMapper::toDto).toList();
+        Page<Post> posts = postService.getAllPosts(categoryId, tagId, pageable);
+        Page<PostDto> postDtos = posts.map(postMapper::toDto);
         return ResponseEntity.ok(postDtos);
     }
 
     // Gets the request attribute being set in the JwtFilter
     @GetMapping("/drafts")
-    public ResponseEntity<List<PostDto>> getDrafts(@RequestAttribute UUID userId) {
+    public ResponseEntity<Page<PostDto>> getDrafts(
+            @RequestAttribute UUID userId,
+            Pageable pageable
+    ) {
         // filter drafts based on logged in user
         User loggedInUser = userService.getUserById(userId);
-        List<PostDto> draftPostDtos = postService.getDraftPosts(loggedInUser).stream()
-                .map(postMapper::toDto)
-                .toList();
+        Page<PostDto> draftPostDtos = postService.getDraftPosts(loggedInUser, pageable)
+                .map(postMapper::toDto);
         return ResponseEntity.ok(draftPostDtos);
     }
 
